@@ -35,6 +35,7 @@ class ORM
     protected static $_config = array(
         'key'              => null,
         'secret'           => null,
+        'profile'          => null,
         'region'           => null,
         'logging'          => false,
         'logging_response' => false,
@@ -1235,11 +1236,17 @@ class ORM
     protected static function _setupClient()
     {
         if (!self::$_client) {
+
             $params = array(
-                'key'    => self::$_config['key'],
-                'secret' => self::$_config['secret'],
                 'region' => self::$_config['region'],
             );
+
+            if (self::$_config['profile']) {
+                $params['profile'] = self::$_config['profile'];
+            } else {
+                $params['key'] = self::$_config['key'];
+                $params['secret'] = self::$_config['secret'];
+            }
 
             if (self::$_config['base_url']) {
                 $params['base_url'] = self::$_config['base_url'];
