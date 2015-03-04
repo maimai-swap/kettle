@@ -16,6 +16,8 @@
 namespace Kettle;
 
 use Aws\DynamoDb\DynamoDbClient;
+use Aws\Common\Credentials\Credentials;
+
 
 class ORM
 {
@@ -1250,6 +1252,15 @@ class ORM
 
             if (self::$_config['base_url']) {
                 $params['base_url'] = self::$_config['base_url'];
+            }
+
+            if (!empty($params['profile'])) {
+                $credentials = Credentials::fromIni($params['profile']);
+                self::$_config['key'] = $credentials->getAccessKeyId();
+                self::$_config['secret'] = $credentials->getSecretKey();;
+                $params['key'] = self::$_config['key'];
+                $params['secret'] = self::$_config['secret'];
+                unset($params['profile']);
             }
 
             $client        = DynamoDbClient::factory($params);
